@@ -11,46 +11,55 @@ import Game.model.Player
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.vector.PathNode
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.IntSize
 
 @Composable
 fun GameCanvas(
-    player: Player,
+    player: Player?,
     modifier: Modifier = Modifier,
-    onCanvasSizeChanged: (Width: Float, height: Float) -> Unit
-){
+    onCanvasSizeChanged: (width: Float, height: Float) -> Unit
+) {
     Canvas(
         modifier = modifier
             .fillMaxSize()
-
+            .onSizeChanged{size: IntSize->
+                onCanvasSizeChanged(size.width.toFloat(),
+                    size.height.toFloat())
+            }
     ) {
         // Dibujar el fondo del area de juego
         drawRect(
-            color = Color.White,
+            color = Color.Black ,
             size = size
         )
-        // Dibujar la nave como un rectangulo provisional
-        val shipWidth=60f
-        val shipHeight=40f
-        val shipPath = Path().apply {
-            moveTo(
-                x = player.x + shipWidth / 2f,
-                y = player.y
+        //Dibujar la nave como un rectangulo  provisional
+        player?.let {
+                ship ->
+            val shipWidth=60f
+            val shipHeight=50f
+            val shipPath = Path().apply {
+                moveTo(
+                    x = ship.x + shipWidth / 2f,
+                    y = ship.y
+                )
+                lineTo(
+                    x = ship.x + shipWidth,
+                    y = ship.y + shipHeight
+                )
+                lineTo(
+                    x = ship.x,
+                    y = ship.y + shipHeight
+                )
+                close()
+            }
+            drawPath(
+                path = shipPath,
+                color = Color.Blue
             )
-            lineTo(
-                x = player.x + shipWidth,
-                y = player.y +shipHeight
-            )
-            lineTo(
-                x = player.x ,
-                y = player.y +shipHeight
-            )
-            close()
-
-
         }
-        drawPath(
-            path = shipPath,
-            color = Color.Blue
-        )
+
+
+
     }
 }
