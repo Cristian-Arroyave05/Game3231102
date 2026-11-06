@@ -27,7 +27,7 @@ fun GameScreen(
     val playerController = remember { PlayerController() }
     var canvasWidth by remember { mutableStateOf(0f) }
     var canvasHeight by remember { mutableStateOf(0f) }
-    var testPosition by remember { mutableStateOf(0f) }
+
     var player by remember {mutableStateOf<Player?>(null)}
     Box(modifier=Modifier.fillMaxSize()){
         GameCanvas(
@@ -39,9 +39,20 @@ fun GameScreen(
                     player = playerController.moveTo(
                         player = Player(),
                             x = (width - 60f) / 2f,
-                            y = (height - 50f) - 40f,
+                            y = (height - 50f) -100f,
                             canvasWidth = width,
                             canvasHeight = height
+                        )
+                    }
+                },
+                onPlayerDrag = {dragX,dragY->
+                    player?.let{currentPlayer->
+                        player=playerController.moveTo(
+                            player=currentPlayer,
+                            x=currentPlayer.x+(dragX*2.8f),
+                            y=currentPlayer.y+(dragY*2.8f),
+                            canvasWidth = canvasWidth,
+                            canvasHeight = canvasHeight
                         )
                     }
                 },
@@ -54,24 +65,7 @@ fun GameScreen(
             )
         Column(modifier = Modifier.align(Alignment.BottomCenter)
             .padding(bottom = 40.dp)){
-            Button(onClick = {
-                val(x,y) = when(testPosition % 4){
-                    0f -> 100f to player!!.y
-                    1f -> canvasWidth - 100f to player!!.y
-                    2f ->  player!!.x to 100f
-                    else -> player!!.x to canvasHeight - 100f
 
-
-                }
-                player = playerController.moveTo(
-                    player = player!!,
-                    x = x,
-                    y = y,
-                    canvasWidth = canvasWidth,
-                    canvasHeight = canvasHeight
-                )
-                testPosition++
-            }) {Text("Probar Limites")}
         }
 
     }

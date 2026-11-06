@@ -2,6 +2,7 @@ package Game
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -13,16 +14,25 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlinx.coroutines.flow.channelFlow
 
 @Composable
 fun GameCanvas(
     player: Player?,
-    modifier: Modifier = Modifier,
-    onCanvasSizeChanged: (width: Float, height: Float) -> Unit
+    onCanvasSizeChanged: (width: Float, height: Float) -> Unit,
+    onPlayerDrag: (Float, Float) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Canvas(
         modifier = modifier
             .fillMaxSize()
+            .pointerInput(player){
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    onPlayerDrag(dragAmount.x, dragAmount.y)
+                }
+            }
             .onSizeChanged{size: IntSize->
                 onCanvasSizeChanged(size.width.toFloat(),
                     size.height.toFloat())
