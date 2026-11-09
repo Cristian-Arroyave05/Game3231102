@@ -15,11 +15,14 @@ import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.input.pointer.pointerInput
+import Game.model.Enemy
+import android.R
 import kotlinx.coroutines.flow.channelFlow
 
 @Composable
 fun GameCanvas(
     player: Player?,
+    enemies: List<Enemy>,
     onCanvasSizeChanged: (width: Float, height: Float) -> Unit,
     onPlayerDrag: (Float, Float) -> Unit,
     modifier: Modifier = Modifier
@@ -66,6 +69,13 @@ fun GameCanvas(
             drawPath(
                 path = shipPath,
                 color = Color.Blue
+            )
+        }
+        enemies.forEach{enemy->
+            drawRect(
+                color = Color.Red,
+                topLeft = Offset(enemy.x, enemy.y),
+                size = Size(enemy.width, enemy.height)
             )
         }
 
